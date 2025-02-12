@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;400;700;900&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900&display=swap" rel="stylesheet">
+    <title>Amigo Secreto</title>
+</head>
+
+<body>
+    <main class="main-content">
+        <header class="header-banner">
+            <h1 class="main-title">Amigo Secreto</h1>
+            <img src="assets/amigo-secreto.png" alt="Imagem representativa de amigo secreto">
+        </header>
+        
+        <section class="input-section">
+            <h2 class="section-title">Digite o nome dos seus amigos</h2>
+            <div class="input-wrapper">
+                <input type="text" id="amigo" class="input-name" placeholder="Digite um nome">
+                <button id="adicionar" class="button-add">Adicionar</button>
+            </div>
+           
+            <ul id="listaAmigos" class="name-list" aria-labelledby="listaAmigos" role="list"></ul>
+
+            <p id="resultado" class="result-text" aria-live="polite"></p>
+
+            <div class="button-container">
+                <button id="sortear" class="button-draw" aria-label="Sortear amigo secreto">
+                    <img src="assets/play_circle_outline.png" alt="Ícone para sortear">
+                    Sortear amigo
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const amigos = new Set(); // Evita nomes duplicados
+            const input = document.getElementById("amigo");
+            const addButton = document.getElementById("adicionar");
+            const sortButton = document.getElementById("sortear");
+            const lista = document.getElementById("listaAmigos");
+            const resultado = document.getElementById("resultado");
+
+            // Adiciona um amigo à lista
+            function adicionarAmigo() {
+                const nome = input.value.trim();
+
+                if (!nome) {
+                    alert("Por favor, insira um nome.");
+                    return;
+                }
+
+                if (amigos.has(nome)) {
+                    alert("Esse nome já foi adicionado.");
+                    return;
+                }
+
+                amigos.add(nome);
+                input.value = "";
+                atualizarLista();
+            }
+
+            // Atualiza a lista na tela
+            function atualizarLista() {
+                lista.innerHTML = "";
+                const fragment = document.createDocumentFragment();
+
+                amigos.forEach((amigo) => {
+                    const li = document.createElement("li");
+                    li.textContent = amigo;
+                    fragment.appendChild(li);
+                });
+
+                lista.appendChild(fragment);
+            }
+
+            // Sorteia um amigo aleatório
+            function sortearAmigo() {
+                if (amigos.size === 0) {
+                    alert("Adicione pelo menos um nome antes de sortear.");
+                    return;
+                }
+
+                const nomesArray = Array.from(amigos);
+                const nomeAleatorio = nomesArray[Math.floor(Math.random() * nomesArray.length)];
+                resultado.textContent = `Amigo secreto sorteado: ${nomeAleatorio}`;
+            }
+
+            // Eventos
+            addButton.addEventListener("click", adicionarAmigo);
+            sortButton.addEventListener("click", sortearAmigo);
+
+            // Permite adicionar pressionando "Enter"
+            input.addEventListener("keypress", (event) => {
+                if (event.key === "Enter") adicionarAmigo();
+            });
+        });
+    </script>
+</body>
+</html>
+
